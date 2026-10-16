@@ -112,6 +112,18 @@ export interface Structure {
   boundary: Boundary
   via: string
   rule: Rule
+  planes?: DsnPlane[]
+}
+
+export interface DsnPlanePolygon {
+  layer: string
+  aperture_width: number
+  coordinates: number[]
+}
+
+export interface DsnPlane {
+  net_name: string
+  polygons: DsnPlanePolygon[]
 }
 
 export interface Layer {
@@ -182,6 +194,15 @@ export interface Image {
   name: string
   outlines: Outline[]
   pins: Pin[]
+  keepouts?: ImageKeepout[]
+}
+
+export interface ImageKeepout {
+  shape: "circle"
+  layer: string
+  diameter: number
+  x: number
+  y: number
 }
 
 export interface Outline {
@@ -193,6 +214,7 @@ export interface Pin {
   pin_number: number | string
   x: number
   y: number
+  rotation?: number
 }
 
 export interface Padstack {
