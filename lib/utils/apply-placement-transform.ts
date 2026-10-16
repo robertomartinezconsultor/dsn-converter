@@ -106,10 +106,7 @@ export function buildDsnLayerToCircuitLayerMap(
   const map = new Map<string, LayerRef>()
   sorted.forEach((layer, position) => {
     // position is the stack position after sorting
-    map.set(
-      layer.name,
-      circuitLayerForStackPosition(position, sorted.length),
-    )
+    map.set(layer.name, circuitLayerForStackPosition(position, sorted.length))
   })
   return map
 }
