@@ -1,4 +1,9 @@
-import type { AnyCircuitElement, PcbPlatedHole, PcbSmtPad } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  LayerRef,
+  PcbPlatedHole,
+  PcbSmtPad,
+} from "circuit-json"
 import Debug from "debug"
 import type { DsnPcb, Padstack } from "lib/dsn-pcb/types"
 import {
@@ -28,7 +33,7 @@ function isThruHolePadstack(padstack: Padstack): boolean {
 
 function getLayerFromPadstack(
   padstack: DsnPcb["library"]["padstacks"][number],
-) {
+): LayerRef {
   return padstack.shapes[0].layer.includes("B.") ||
     padstack.shapes[0].layer === "Bottom"
     ? "bottom"

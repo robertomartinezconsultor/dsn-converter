@@ -34,7 +34,7 @@ export function convertStructurePlanesToCopperPours(
         type: "pcb_copper_pour",
         shape: "polygon",
         pcb_copper_pour_id: `pcb_copper_pour_${plane.net_name}_${planeIndex}_${polygonIndex}`,
-        layer: (layerMap.get(polygon.layer) ?? "top") as any,
+        layer: layerMap.get(polygon.layer) ?? "top",
         points: rawPoints.map((point) =>
           applyToPoint(dsnToCircuitJsonTransform, point),
         ),

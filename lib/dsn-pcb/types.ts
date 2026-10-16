@@ -38,6 +38,7 @@ export interface DsnPcb {
       }>
       width: number
     }
+    planes?: DsnPlane[]
   }
   placement: {
     components: Array<ComponentPlacement>

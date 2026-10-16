@@ -9,6 +9,8 @@
  * pads, ports and keepouts at unrotated, unmirrored positions.
  */
 
+import type { LayerRef } from "circuit-json"
+
 export interface DsnPlaceLike {
   x?: number | null
   y?: number | null
@@ -71,9 +73,26 @@ export function getTotalPadRotation(
  * first layer -> "top", last -> "bottom", inner layers -> "inner1", "inner2",
  * ... in stack order.
  */
+/**
+ * Circuit JSON layer ref for a stack position: first layer is the top,
+ * last is the bottom, everything between is an inner layer numbered by
+ * its position.
+ */
+export function circuitLayerForStackPosition(
+  position: number,
+  layerCount: number,
+): LayerRef {
+  if (position === 0) return "top"
+  if (position === layerCount - 1) return "bottom"
+  // The template always yields "inner<position>"; the cast covers DSN
+  // stacks deeper than circuit JSON's six named inner layers, whose
+  // positional names have no member in the LayerRef union
+  return `inner${position}` as LayerRef
+}
+
 export function buildDsnLayerToCircuitLayerMap(
   layers: Array<{ name: string; property?: { index?: number } }>,
-): Map<string, string> {
+): Map<string, LayerRef> {
   // Sort by the declared stack index; layers without one (some exporters
   // omit the (property (index N)) group) keep their declaration order
   const sorted = layers
@@ -84,21 +103,18 @@ export function buildDsnLayerToCircuitLayerMap(
         (b.layer.property?.index ?? b.declarationIndex),
     )
     .map(({ layer }) => layer)
-  const map = new Map<string, string>()
+  const map = new Map<string, LayerRef>()
   sorted.forEach((layer, position) => {
     // position is the stack position after sorting
-    if (position === 0) {
-      map.set(layer.name, "top")
-    } else if (position === sorted.length - 1) {
-      map.set(layer.name, "bottom")
-    } else {
-      map.set(layer.name, `inner${position}`)
-    }
+    map.set(
+      layer.name,
+      circuitLayerForStackPosition(position, sorted.length),
+    )
   })
   return map
 }
 
-export function flipCircuitLayer(layer: string): string {
+export function flipCircuitLayer(layer: LayerRef): LayerRef {
   if (layer === "top") return "bottom"
   if (layer === "bottom") return "top"
   return layer

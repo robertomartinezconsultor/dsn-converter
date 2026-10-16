@@ -24,13 +24,14 @@ export function getPinNum(nodes: ASTNode[]): number | string | null {
 
   // Extract pin number from AST nodes
   let pinNumber
+  const nameNode = nodes[nameNodeIndex]
 
-  if (nodes[nameNodeIndex]?.type === "List" && nodes[nameNodeIndex].children) {
+  if (nameNode?.type === "List" && nameNode.children) {
     // Pin number is in a List structure
-    pinNumber = nodes[nameNodeIndex].children[0]?.value
-  } else if (nodes[nameNodeIndex]?.type === "Atom") {
+    pinNumber = nameNode.children[0]?.value
+  } else if (nameNode?.type === "Atom") {
     // Pin number is direct value
-    pinNumber = nodes[nameNodeIndex].value
+    pinNumber = nameNode.value
   } else {
     debug("Unsupported pin number format:", nodes)
     return null
